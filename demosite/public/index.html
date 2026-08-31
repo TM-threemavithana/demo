@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spice Haven | Premium Spices</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Spice<span>Haven</span></div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#products">Products</a></li>
+            <li><a href="#about">About Us</a></li>
+        </ul>
+    </nav>
+
+    <header id="home" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Elevate Your Culinary Experience</h1>
+            <p>Discover the finest, ethically sourced spices from around the globe. Rich in flavor, aroma, and tradition.</p>
+            <a href="#products" class="cta-button">Explore Spices</a>
+        </div>
+    </header>
+
+    <section id="products" class="products-section">
+        <h2>Our Premium Spices</h2>
+        <div class="product-grid">
+            <div class="product-card">
+                <div class="img-container">
+                    <img src="images/cinnamon.png" alt="Ceylon Cinnamon">
+                </div>
+                <h3>Ceylon Cinnamon</h3>
+                <p>Sweet, delicate, and complex. Perfect for baking and curries.</p>
+            </div>
+            <div class="product-card">
+                <div class="img-container">
+                    <img src="images/pepper.png" alt="Black Peppercorns">
+                </div>
+                <h3>Black Peppercorns</h3>
+                <p>Bold, pungent, and aromatic. The king of spices.</p>
+            </div>
+            <div class="product-card">
+                <div class="img-container">
+                    <img src="images/clove.png" alt="Whole Cloves">
+                </div>
+                <h3>Whole Cloves</h3>
+                <p>Intense, warm, and sweet. Ideal for marinades and teas.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Spice Haven. All rights reserved.</p>
+    </footer>
+
+    <!-- Chatbot Assistant -->
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header" id="chatHeader">
+            <span>Spice Assistant</span>
+            <button id="closeChatBtn" class="icon-btn">&minus;</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message assistant">Hello! I'm your Spice Assistant. How can I help you today?</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Ask about our spices..." autocomplete="off">
+            <button id="sendBtn">Send</button>
+        </div>
+    </div>
+    
+    <button class="chat-toggle-btn" id="chatToggleBtn">
+        💬 Chat
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>
