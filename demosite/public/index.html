@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spice Haven | Premium Spices</title>
+    <title>Echo Hotel | Luxury Stays</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <nav class="navbar">
-        <div class="logo">Spice<span>Haven</span></div>
+        <div class="logo">Echo<span>Hotel</span></div>
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
-            <li><a href="#products">Products</a></li>
+            <li><a href="#rooms">Rooms</a></li>
             <li><a href="#about">About Us</a></li>
         </ul>
     </nav>
@@ -20,54 +20,89 @@
     <header id="home" class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1>Elevate Your Culinary Experience</h1>
-            <p>Discover the finest, ethically sourced spices from around the globe. Rich in flavor, aroma, and tradition.</p>
-            <a href="#products" class="cta-button">Explore Spices</a>
+            <h1>Experience Ultimate Luxury and Comfort</h1>
+            <p>Discover world-class hospitality, breathtaking views, and unparalleled comfort in our luxurious rooms and suites.</p>
+            <a href="#rooms" class="cta-button">Explore Rooms</a>
         </div>
     </header>
 
-    <section id="products" class="products-section">
-        <h2>Our Premium Spices</h2>
+    <section id="rooms" class="products-section">
+        <h2>Our Luxurious Rooms</h2>
         <div class="product-grid">
             <div class="product-card">
                 <div class="img-container">
-                    <img src="images/cinnamon.png" alt="Ceylon Cinnamon">
+                    <img src="images/single.jpg" alt="Standard Single Room">
                 </div>
-                <h3>Ceylon Cinnamon</h3>
-                <p>Sweet, delicate, and complex. Perfect for baking and curries.</p>
+                <h3>Standard Single</h3>
+                <p>Cozy and elegant, perfect for the solo traveler seeking comfort and style.</p>
+                <div class="room-details">
+                    <p class="price">15,000 LKR <span>/ night</span></p>
+                    <p class="guests">Max Guests: 1</p>
+                    <ul class="amenities">
+                        <li>Free Wi-Fi</li>
+                        <li>Air Conditioning</li>
+                        <li>Flat-screen TV</li>
+                        <li>Tea/Coffee Maker</li>
+                    </ul>
+                    <button class="book-btn" onclick="openBookingModal('RM-101')">Book Now</button>
+                </div>
             </div>
             <div class="product-card">
                 <div class="img-container">
-                    <img src="images/pepper.png" alt="Black Peppercorns">
+                    <img src="images/double.jpg" alt="Standard Double Room">
                 </div>
-                <h3>Black Peppercorns</h3>
-                <p>Bold, pungent, and aromatic. The king of spices.</p>
+                <h3>Standard Double</h3>
+                <p>Spacious and inviting, designed for relaxation with a plush queen-size bed.</p>
+                <div class="room-details">
+                    <p class="price">22,000 LKR <span>/ night</span></p>
+                    <p class="guests">Max Guests: 2</p>
+                    <ul class="amenities">
+                        <li>Free Wi-Fi</li>
+                        <li>Air Conditioning</li>
+                        <li>Flat-screen TV</li>
+                        <li>Mini Fridge</li>
+                    </ul>
+                    <button class="book-btn" onclick="openBookingModal('RM-102')">Book Now</button>
+                </div>
             </div>
             <div class="product-card">
                 <div class="img-container">
-                    <img src="images/clove.png" alt="Whole Cloves">
+                    <img src="images/suite.jpg" alt="Ocean View Suite">
                 </div>
-                <h3>Whole Cloves</h3>
-                <p>Intense, warm, and sweet. Ideal for marinades and teas.</p>
+                <h3>Ocean View Suite</h3>
+                <p>Experience the ultimate luxury with breathtaking ocean views and expansive living areas.</p>
+                <div class="room-details">
+                    <p class="price">45,000 LKR <span>/ night</span></p>
+                    <p class="guests">Max Guests: 3</p>
+                    <ul class="amenities">
+                        <li>Free Wi-Fi</li>
+                        <li>Air Conditioning</li>
+                        <li>Smart TV</li>
+                        <li>Mini Bar</li>
+                        <li>Ocean View</li>
+                        <li>Bathtub</li>
+                    </ul>
+                    <button class="book-btn" onclick="openBookingModal('RM-201')">Book Now</button>
+                </div>
             </div>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2026 Spice Haven. All rights reserved.</p>
+        <p>&copy; 2026 Echo Hotel. All rights reserved.</p>
     </footer>
 
     <!-- Chatbot Assistant -->
     <div class="chat-container" id="chatContainer">
         <div class="chat-header" id="chatHeader">
-            <span>Spice Assistant</span>
+            <span>Hotel Concierge</span>
             <button id="closeChatBtn" class="icon-btn">&minus;</button>
         </div>
         <div class="chat-messages" id="chatMessages">
-            <div class="message assistant">Hello! I'm your Spice Assistant. How can I help you today?</div>
+            <div class="message assistant">Hello! I'm your Hotel Concierge. How can I help you today?</div>
         </div>
         <div class="chat-input-area">
-            <input type="text" id="chatInput" placeholder="Ask about our spices..." autocomplete="off">
+            <input type="text" id="chatInput" placeholder="Ask about our rooms..." autocomplete="off">
             <button id="sendBtn">Send</button>
         </div>
     </div>
@@ -75,6 +110,31 @@
     <button class="chat-toggle-btn" id="chatToggleBtn">
         💬 Chat
     </button>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="closeModalBtn" class="close-btn">&times;</button>
+            <h2>Complete Your Booking</h2>
+            <form id="bookingForm">
+                <input type="hidden" id="modalRoomId" required>
+                <div class="form-group">
+                    <label for="modalName">Full Name</label>
+                    <input type="text" id="modalName" placeholder="e.g. John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="modalMobile">Mobile Number</label>
+                    <input type="tel" id="modalMobile" placeholder="e.g. +94 77 123 4567" required>
+                </div>
+                <div class="form-group">
+                    <label for="modalNights">Number of Nights</label>
+                    <input type="number" id="modalNights" min="1" max="30" value="1" required>
+                </div>
+                <button type="submit" class="cta-button" id="submitBookingBtn" style="width: 100%; margin-top: 1rem;">Confirm Booking</button>
+            </form>
+            <div id="bookingMessage" class="booking-message"></div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

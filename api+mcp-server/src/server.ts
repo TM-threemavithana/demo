@@ -2,88 +2,78 @@ import express, { type Request, type Response } from "express";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { createSpiceMcpServer } from "./mcp.js";
 import {
-  compareProducts,
-  getInventorySnapshot,
-  getProduct,
-  getProductCategories,
-  recommendProducts,
-  searchProducts
-} from "./services/product-service.js";
-import type { SpiceProduct } from "./types.js";
+  bookRoom,
+  getRoom,
+  searchRooms,
+  getBookings,
+} from "./services/room-service.js";
+import type { HotelRoom } from "./types.js";
 
 const app = express();
 app.use(express.json({ limit: "256kb" }));
 
+// Manual CORS Middleware
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  next();
+});
+
 app.get("/", (_req, res) => {
   res.json({
-    service: "Ceylon Spice Company API and MCP Server",
+    service: "Hotel Booking API and MCP Server",
     version: "0.1.0",
-    endpoints: { health: "/health", products: "/api/products", mcp: "/mcp" }
+    endpoints: { health: "/health", rooms: "/api/rooms", mcp: "/mcp" }
   });
 });
 
 app.get("/health", (_req, res) => res.json({ status: "ok" }));
 
-app.get("/api/products", (req, res) => {
+app.get("/api/rooms", (req, res) => {
   const category = req.query.category;
-  const validCategory = category === "whole" || category === "ground" || category === "blend"
-    ? category as SpiceProduct["category"]
+  const validCategory = category === "single" || category === "double" || category === "suite" || category === "penthouse"
+    ? category as HotelRoom["category"]
     : undefined;
   const maxPrice = req.query.maxPriceLkr ? Number(req.query.maxPriceLkr) : undefined;
+  const minGuests = req.query.minGuests ? Number(req.query.minGuests) : undefined;
   const limit = req.query.limit ? Number(req.query.limit) : 20;
 
-  const result = searchProducts({
+  const result = searchRooms({
     query: typeof req.query.q === "string" ? req.query.q : undefined,
     category: validCategory,
     maxPriceLkr: Number.isFinite(maxPrice) ? maxPrice : undefined,
-    inStockOnly: req.query.inStockOnly === "true",
+    minGuests: Number.isFinite(minGuests) ? minGuests : undefined,
+    availableOnly: req.query.availableOnly === "true",
     limit: Number.isFinite(limit) ? limit : 20
   });
-  res.json({ products: result, count: result.length });
+  res.json({ rooms: result, count: result.length });
 });
 
-app.get("/api/categories", (_req, res) => {
-  res.json({ categories: getProductCategories() });
-});
-
-app.get("/api/inventory", (_req, res) => {
-  res.json(getInventorySnapshot());
-});
-
-app.get("/api/products/compare", (req, res) => {
-  const identifiers = typeof req.query.identifiers === "string"
-    ? req.query.identifiers.split(",")
-    : [];
-
-  if (identifiers.length < 2) {
-    return res.status(400).json({ detail: "Provide at least two comma-separated product IDs or SKUs" });
+app.post("/api/rooms/book", (req, res) => {
+  const { roomId, guestName, mobileNumber, nights } = req.body;
+  if (!roomId || !guestName || !mobileNumber || !nights) {
+    return res.status(400).json({ detail: "Missing required booking details (roomId, guestName, mobileNumber, nights)" });
   }
 
-  return res.json(compareProducts(identifiers));
-});
-
-app.get("/api/products/recommend", (req, res) => {
-  const budget = req.query.budgetLkr ? Number(req.query.budgetLkr) : undefined;
-  const limit = req.query.limit ? Number(req.query.limit) : undefined;
-
-  if (typeof req.query.need !== "string" || !req.query.need.trim()) {
-    return res.status(400).json({ detail: "Query parameter 'need' is required" });
+  const result = bookRoom({ roomId, guestName, mobileNumber, nights });
+  if (!result.success) {
+    return res.status(400).json(result);
   }
-
-  return res.json({
-    recommendations: recommendProducts({
-      need: req.query.need,
-      budgetLkr: Number.isFinite(budget) ? budget : undefined,
-      inStockOnly: req.query.inStockOnly !== "false",
-      limit: Number.isFinite(limit) ? limit : undefined
-    })
-  });
+  return res.json(result);
 });
 
-app.get("/api/products/:identifier", (req, res) => {
-  const product = getProduct(req.params.identifier);
-  if (!product) return res.status(404).json({ detail: "Product not found" });
-  return res.json(product);
+app.get("/api/rooms/:identifier", (req, res) => {
+  const room = getRoom(req.params.identifier);
+  if (!room) return res.status(404).json({ detail: "Room not found" });
+  return res.json(room);
+});
+
+app.get("/api/bookings", (req, res) => {
+  return res.json(getBookings());
 });
 
 app.post("/mcp", async (req: Request, res: Response) => {
@@ -110,6 +100,6 @@ const port = Number(process.env.PORT ?? 3001);
 const host = process.env.HOST ?? "127.0.0.1";
 
 app.listen(port, host, () => {
-  console.log(`Ceylon Spice API: http://${host}:${port}/api/products`);
-  console.log(`Ceylon Spice MCP: http://${host}:${port}/mcp`);
+  console.log(`Hotel Booking API: http://${host}:${port}/api/rooms`);
+  console.log(`Hotel Booking MCP: http://${host}:${port}/mcp`);
 });

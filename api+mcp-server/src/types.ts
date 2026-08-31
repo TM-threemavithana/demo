@@ -1,34 +1,47 @@
-export type SpiceProduct = {
+export type RoomCategory = "single" | "double" | "suite" | "penthouse";
+
+export type HotelRoom = {
   id: string;
-  sku: string;
+  roomNumber: string;
   name: string;
   description: string;
-  category: "whole" | "ground" | "blend";
-  origin: string;
-  priceLkr: number;
-  packageGrams: number;
-  stockQuantity: number;
+  category: RoomCategory;
+  pricePerNightLkr: number;
+  maxGuests: number;
+  amenities: string[];
+  isAvailable: boolean; // Simple availability for now
   active: boolean;
 };
 
-export type ProductSearch = {
+export type RoomSearchFilters = {
   query?: string;
-  category?: SpiceProduct["category"];
+  category?: RoomCategory;
   maxPriceLkr?: number;
-  inStockOnly?: boolean;
+  minGuests?: number;
+  availableOnly?: boolean;
   limit?: number;
 };
 
-export type ProductListOptions = {
-  category?: SpiceProduct["category"];
-  inStockOnly?: boolean;
-  includeInactive?: boolean;
-  limit?: number;
+export type RoomBookingRequest = {
+  roomId: string;
+  guestName: string;
+  mobileNumber: string;
+  nights: number;
 };
 
-export type ProductRecommendationInput = {
-  need: string;
-  budgetLkr?: number;
-  inStockOnly?: boolean;
-  limit?: number;
+export type RoomBookingResult = {
+  success: boolean;
+  message: string;
+  bookingId?: string;
+  totalPriceLkr?: number;
+};
+
+export type BookingRecord = {
+  bookingId: string;
+  roomId: string;
+  guestName: string;
+  mobileNumber: string;
+  nights: number;
+  totalPriceLkr: number;
+  createdAt: string;
 };

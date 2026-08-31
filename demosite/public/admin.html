@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Echo Hotel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-color: var(--secondary);
+            color: #fff;
+            padding: 2rem;
+        }
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            padding-bottom: 1rem;
+        }
+        .admin-header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+        }
+        .admin-header a {
+            color: #fff;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .admin-header a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .data-table-wrapper {
+            background: rgba(10, 25, 47, 0.7);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            overflow-x: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        th {
+            background: rgba(0,0,0,0.3);
+            color: var(--primary-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background: rgba(255,255,255,0.02);
+        }
+        td {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+        .status-badge {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>Bookings Dashboard</h1>
+        <a href="/">← Back to Site</a>
+    </div>
+
+    <div class="data-table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Room ID</th>
+                    <th>Guest Name</th>
+                    <th>Mobile Number</th>
+                    <th>Nights</th>
+                    <th>Total Price</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="bookingsTableBody">
+                <!-- Data will be populated via JS -->
+            </tbody>
+        </table>
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <h2>No bookings found.</h2>
+            <p>Waiting for the first reservation...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const tbody = document.getElementById('bookingsTableBody');
+        const emptyState = document.getElementById('emptyState');
+
+        try {
+            const response = await fetch('http://localhost:3001/api/bookings');
+            if (!response.ok) throw new Error('Failed to fetch');
+            const bookings = await response.json();
+
+            if (bookings.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            bookings.forEach(booking => {
+                const tr = document.createElement('tr');
+                
+                // Format Date
+                const date = new Date(booking.createdAt).toLocaleString();
+                
+                // Format Price
+                const price = new Intl.NumberFormat('en-LK', { style: 'currency', currency: 'LKR' }).format(booking.totalPriceLkr);
+
+                tr.innerHTML = `
+                    <td style="color: #fff; font-weight: 600;">${booking.bookingId}</td>
+                    <td>${booking.roomId}</td>
+                    <td style="color: #fff;">${booking.guestName}</td>
+                    <td>${booking.mobileNumber}</td>
+                    <td>${booking.nights}</td>
+                    <td>${price}</td>
+                    <td>${date}</td>
+                    <td><span class="status-badge">Confirmed</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (error) {
+            console.error(error);
+            emptyState.style.display = 'block';
+            emptyState.innerHTML = '<h2 style="color: #f44336;">Error Loading Bookings</h2><p>Could not connect to the API server.</p>';
+        }
+    });
+</script>
+
+</body>
+</html>

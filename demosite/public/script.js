@@ -126,4 +126,66 @@ document.addEventListener('DOMContentLoaded', () => {
     function scrollToBottom() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
+
+    // Modal Booking Logic
+    const bookingModal = document.getElementById('bookingModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const bookingForm = document.getElementById('bookingForm');
+    const modalRoomId = document.getElementById('modalRoomId');
+    const bookingMessage = document.getElementById('bookingMessage');
+    const submitBookingBtn = document.getElementById('submitBookingBtn');
+
+    window.openBookingModal = (roomId) => {
+        modalRoomId.value = roomId;
+        bookingMessage.textContent = '';
+        bookingMessage.className = 'booking-message';
+        bookingForm.reset();
+        bookingModal.classList.add('active');
+    };
+
+    closeModalBtn.addEventListener('click', () => {
+        bookingModal.classList.remove('active');
+    });
+
+    bookingForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const roomId = modalRoomId.value;
+        const guestName = document.getElementById('modalName').value.trim();
+        const mobileNumber = document.getElementById('modalMobile').value.trim();
+        const nights = parseInt(document.getElementById('modalNights').value, 10);
+        
+        submitBookingBtn.disabled = true;
+        submitBookingBtn.textContent = 'Processing...';
+        bookingMessage.textContent = '';
+        bookingMessage.className = 'booking-message';
+
+        try {
+            const response = await fetch('http://localhost:3001/api/rooms/book', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ roomId, guestName, mobileNumber, nights })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                bookingMessage.textContent = data.message;
+                bookingMessage.className = 'booking-message success';
+                setTimeout(() => {
+                    bookingModal.classList.remove('active');
+                }, 3000);
+            } else {
+                bookingMessage.textContent = data.message || data.detail || 'Booking failed.';
+                bookingMessage.className = 'booking-message error';
+            }
+        } catch (error) {
+            bookingMessage.textContent = 'Network error. Please try again.';
+            bookingMessage.className = 'booking-message error';
+        } finally {
+            submitBookingBtn.disabled = false;
+            submitBookingBtn.textContent = 'Confirm Booking';
+        }
+    });
+
 });
